@@ -30,7 +30,7 @@ export function Calendar() {
   };
 
   return (
-    <>
+    <div className="calendar">
       <div className="calendar-header">
         <button
           aria-label="go-to-current-month-btn"
@@ -67,9 +67,10 @@ export function Calendar() {
             ) : (
               format(day, "d")
             )}
+            <button className="add-event-btn">+</button>
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
