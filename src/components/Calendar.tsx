@@ -4,7 +4,7 @@ import {
   endOfMonth,
   endOfWeek,
   format,
-  startOfMinute,
+  isBefore,
   startOfMonth,
   startOfWeek,
 } from "date-fns";
@@ -15,9 +15,19 @@ export function Calendar() {
   const [visibleMonth, setVisibleMonth] = useState(currentDate);
 
   const visibleDates: Date[] = eachDayOfInterval({
-    start: startOfWeek(startOfMonth(currentDate)),
-    end: endOfWeek(endOfMonth(currentDate)),
+    start: startOfWeek(startOfMonth(visibleMonth)),
+    end: endOfWeek(endOfMonth(visibleMonth)),
   });
+
+  const isCurrentMonth = (date: Date) => {
+    return date.getMonth() === currentDate.getMonth();
+  };
+
+  const isPastDate = (date: Date) => {
+    const today = new Date(currentDate);
+    today.setHours(0, 0, 0, 0);
+    return isBefore(date, today);
+  };
 
   return (
     <>
@@ -42,6 +52,23 @@ export function Calendar() {
           {">"}
         </button>
         <span>{format(new Date(visibleMonth), "MMMM yyyy")}</span>
+      </div>
+      <div className="calendar-grid">
+        {visibleDates.map((day, index) => (
+          <div
+            className={`calendar-day ${
+              !isCurrentMonth(day) ? "out-of-month" : ""
+            } ${isPastDate(day) ? "inactive" : ""}`}
+          >
+            {index < 7 ? (
+              <>
+                {format(day, "E")} <br /> {format(day, "d")}
+              </>
+            ) : (
+              format(day, "d")
+            )}
+          </div>
+        ))}
       </div>
     </>
   );
